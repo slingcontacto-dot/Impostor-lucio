@@ -14,9 +14,14 @@ export enum Category {
   ACTORS = 'Actores',
   ACTRESSES = 'Actrices',
   SOCCER = 'Jugadores de Futbol',
+  GAMES = 'Juegos',
+  MOVIES = 'Películas',
+  CORDOBA = 'Córdoba',
   BRANDS = 'Marcas',
   OBJECTS = 'Cosas / Objetos',
   COLORS = 'Colores',
+  COUNTRIES = 'Países',
+  APPLICATIONS = 'Aplicaciones',
   NOSOTROS = 'Nosotros (Custom)'
 }
 

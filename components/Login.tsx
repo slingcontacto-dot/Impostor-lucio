@@ -25,14 +25,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 card-enter">
       <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-sm border border-slate-700 relative z-10">
-        {/* TÍTULO EN UNA SOLA LÍNEA Y MÁS CHICO */}
-        <h1 className="text-3xl font-black text-red-600 mb-4 text-center tracking-widest uppercase drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] leading-tight whitespace-nowrap">
-          Impostor Lucio
+        {/* TÍTULO EN DOS LÍNEAS PARA QUE ENTRE BIEN EN MÓVIL */}
+        <h1 className="text-3xl md:text-4xl font-black text-red-600 mb-4 text-center tracking-widest uppercase drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] leading-tight">
+          EL IMPOSTOR<br/>CORDOBÉS
         </h1>
         
         {/* TEXTO EN MAYUSCULAS */}
         <p className="text-slate-400 text-center mb-6 font-bold uppercase text-xs tracking-widest">
-          PEDILE LOS DATOS AL GORDO LUCIO PARA JUGAR
+          PEDI LOS DATOS AL LUCIO PARA JUGAR
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-4">

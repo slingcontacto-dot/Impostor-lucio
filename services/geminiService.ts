@@ -106,6 +106,42 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
     { word: "Iniesta", hint: "Gol" }, { word: "Xavi", hint: "Pase" },
     { word: "Buffon", hint: "Eterno" }, { word: "Dibu Martínez", hint: "Bailecito" }
   ],
+  [Category.GAMES]: [
+    { word: "Minecraft", hint: "Bloques" }, { word: "FIFA", hint: "EA Sports" },
+    { word: "Fortnite", hint: "Bus" }, { word: "GTA V", hint: "Estrellas" },
+    { word: "League of Legends", hint: "Grieta" }, { word: "Call of Duty", hint: "Guerra" },
+    { word: "Counter Strike", hint: "Bomba" }, { word: "Super Mario Bros", hint: "Hongo" },
+    { word: "Among Us", hint: "Nave" }, { word: "Roblox", hint: "Cuadrado" },
+    { word: "Clash Royale", hint: "Torres" }, { word: "Rocket League", hint: "Autos" },
+    { word: "Pokemon", hint: "Captura" }, { word: "Zelda", hint: "Princesa" },
+    { word: "God of War", hint: "Esparta" }, { word: "The Sims", hint: "Vida" },
+    { word: "Free Fire", hint: "Isla" }, { word: "Mortal Kombat", hint: "Fatality" },
+    { word: "Red Dead Redemption", hint: "Vaquero" }, { word: "Pac-Man", hint: "Fantasmas" }
+  ],
+  [Category.MOVIES]: [
+    { word: "Rápidos y Furiosos", hint: "Familia" }, { word: "Harry Potter", hint: "Magia" },
+    { word: "Avengers", hint: "Gemas" }, { word: "Titanic", hint: "Barco" },
+    { word: "Star Wars", hint: "Fuerza" }, { word: "El Rey León", hint: "Ciclo" },
+    { word: "Toy Story", hint: "Juguetes" }, { word: "Spider-Man", hint: "Sentido" },
+    { word: "Batman", hint: "Noche" }, { word: "Avatar", hint: "Azul" },
+    { word: "Shrek", hint: "Pantano" }, { word: "Jurassic Park", hint: "Dino" },
+    { word: "El Padrino", hint: "Oferta" }, { word: "Matrix", hint: "Pastilla" },
+    { word: "Frozen", hint: "Hielo" }, { word: "Piratas del Caribe", hint: "Perla" },
+    { word: "Joker", hint: "Risa" }, { word: "Terminator", hint: "Futuro" },
+    { word: "Rocky", hint: "Boxeo" }, { word: "Volver al Futuro", hint: "Auto" }
+  ],
+  [Category.CORDOBA]: [
+    { word: "Mate", hint: "Verde" }, { word: "Vino con Pritty", hint: "Sodeado" },
+    { word: "Fernet con Coca", hint: "70/30" }, { word: "Asado", hint: "Domingo" },
+    { word: "Cuarteto", hint: "Tunga Tunga" }, { word: "La Mona Jiménez", hint: "Mandamás" },
+    { word: "Rodrigo Bueno", hint: "El Potro" }, { word: "Joda", hint: "Noche" },
+    { word: "Baile", hint: "Sargento" }, { word: "Choripán", hint: "Dante" },
+    { word: "Talleres", hint: "Matador" }, { word: "Belgrano", hint: "Pirata" },
+    { word: "Instituto", hint: "Gloria" }, { word: "Sierras", hint: "Río" },
+    { word: "Criollitos", hint: "Panadería" }, { word: "Culiado", hint: "Amigo" },
+    { word: "Nueva Córdoba", hint: "Estudiantes" }, { word: "Cañada", hint: "Piedras" },
+    { word: "Arco de Córdoba", hint: "Entrada" }, { word: "Barrio Güemes", hint: "Cheto" }
+  ],
   [Category.COLORS]: [
     { word: "Rojo", hint: "Sangre" }, { word: "Azul", hint: "Mar" },
     { word: "Verde", hint: "Pasto" }, { word: "Amarillo", hint: "Luz" },
@@ -141,6 +177,30 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
     { word: "Starbucks", hint: "Café" }, { word: "Zara", hint: "Ropa" },
     { word: "Gucci", hint: "Lujo" }, { word: "Rolex", hint: "Reloj" },
     { word: "Lego", hint: "Bloques" }, { word: "Marvel", hint: "Héroes" }
+  ],
+  [Category.COUNTRIES]: [
+    { word: "Argentina", hint: "Asado" }, { word: "Brasil", hint: "Samba" },
+    { word: "Italia", hint: "Pasta" }, { word: "Francia", hint: "Torre" },
+    { word: "España", hint: "Paella" }, { word: "México", hint: "Tacos" },
+    { word: "Estados Unidos", hint: "Hamburguesa" }, { word: "Japón", hint: "Sushi" },
+    { word: "China", hint: "Arroz" }, { word: "Alemania", hint: "Cerveza" },
+    { word: "Inglaterra", hint: "Té" }, { word: "Rusia", hint: "Vodka" },
+    { word: "Colombia", hint: "Café" }, { word: "Perú", hint: "Ceviche" },
+    { word: "Venezuela", hint: "Arepa" }, { word: "Chile", hint: "Vino" },
+    { word: "Uruguay", hint: "Mate" }, { word: "Egipto", hint: "Pirámide" },
+    { word: "Australia", hint: "Canguro" }, { word: "Canadá", hint: "Arce" }
+  ],
+  [Category.APPLICATIONS]: [
+    { word: "WhatsApp", hint: "Mensaje" }, { word: "Instagram", hint: "Stories" },
+    { word: "TikTok", hint: "Baila" }, { word: "Facebook", hint: "Azul" },
+    { word: "YouTube", hint: "Video" }, { word: "Spotify", hint: "Playlist" },
+    { word: "Twitter", hint: "Pájaro" }, { word: "Snapchat", hint: "Fantasma" },
+    { word: "Netflix", hint: "Películas" }, { word: "Tinder", hint: "Match" },
+    { word: "Google Maps", hint: "Ubicación" }, { word: "Uber", hint: "Auto" },
+    { word: "PedidosYa", hint: "Delivery" }, { word: "Mercado Libre", hint: "Envío" },
+    { word: "Zoom", hint: "Reunión" }, { word: "Pinterest", hint: "Tablero" },
+    { word: "Telegram", hint: "Avión" }, { word: "Discord", hint: "Gamer" },
+    { word: "Duolingo", hint: "Búho" }, { word: "Gmail", hint: "Correo" }
   ],
   [Category.NOSOTROS]: [] // Se llena dinámicamente
 };
@@ -197,7 +257,12 @@ const getCategoryContext = (category: Category): string => {
     case Category.SOCCER: return "famous football player";
     case Category.BRANDS: return "famous global brand";
     case Category.OBJECTS: return "common everyday object";
+    case Category.CORDOBA: return "cultural reference, slang, place or person from Córdoba, Argentina";
+    case Category.GAMES: return "famous video game title";
+    case Category.MOVIES: return "famous movie title";
     case Category.COLORS: return "color name";
+    case Category.COUNTRIES: return "famous country name";
+    case Category.APPLICATIONS: return "famous mobile app name";
     default: return "common object";
   }
 };
@@ -226,6 +291,11 @@ export const generateGameContent = async (category: Category): Promise<GameConte
       ? `DO NOT use any of these words: ${usedWords.join(', ')}.` 
       : "";
 
+    // Instrucción especial para países sobre las pistas
+    const hintInstruction = category === Category.COUNTRIES 
+      ? "The 'hint' MUST be a typical food, landmark, or cultural icon of that country."
+      : "The 'hint' must be SUBTLE, VAGUE, and AMBIGUOUS.";
+
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: `Generate a secret word for the game category: ${category}. Also provide a 'hint' for an impostor. 
@@ -234,7 +304,7 @@ export const generateGameContent = async (category: Category): Promise<GameConte
         systemInstruction: `You are a game engine for 'The Impostor'. 
         1. Select a random ${context} in Spanish. 
         2. Generate a 'hint' for the impostor.
-        3. CRITICAL: The 'hint' must be SUBTLE, VAGUE, and AMBIGUOUS. 
+        3. ${hintInstruction}
         4. The 'hint' MUST be in Spanish and VERY SHORT (maximum 3 words).
         5. Output MUST be valid JSON.`,
         temperature: 1.5, // Alta temperatura para variedad
