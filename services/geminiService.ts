@@ -57,16 +57,18 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
     { word: "Valquiria", hint: "Giro" }, { word: "Mosquetera", hint: "Disparo" }
   ],
   [Category.BRAWL_STARS]: [
+    { word: "Bull", hint: "Matias Velazquez" }, // CUSTOM OVERRIDE
+    { word: "Angelo", hint: "Ignacio Adami" },   // CUSTOM OVERRIDE
+    { word: "Barley", hint: "Facundo Cabrera" }, // CUSTOM OVERRIDE
     { word: "Shelly", hint: "Básica" }, { word: "El Primo", hint: "Meteorito" },
     { word: "Spike", hint: "Silencio" }, { word: "Crow", hint: "Dagas" },
     { word: "Leon", hint: "Camuflaje" }, { word: "Colt", hint: "Balas" },
-    { word: "Bull", hint: "Arbusto" }, { word: "Jessie", hint: "Torreta" },
-    { word: "Dynamike", hint: "Explosivo" }, { word: "Mortis", hint: "Pala" },
-    { word: "Tara", hint: "Cartas" }, { word: "Gene", hint: "Mano" },
-    { word: "Piper", hint: "Paraguas" }, { word: "Frank", hint: "Martillo" },
-    { word: "Bibi", hint: "Bate" }, { word: "Bea", hint: "Abeja" },
-    { word: "Edgar", hint: "Bufanda" }, { word: "Surge", hint: "Mejora" },
-    { word: "Colette", hint: "Fan" }, { word: "Amber", hint: "Fuego" }
+    { word: "Jessie", hint: "Torreta" }, { word: "Dynamike", hint: "Explosivo" }, 
+    { word: "Mortis", hint: "Pala" }, { word: "Tara", hint: "Cartas" }, 
+    { word: "Gene", hint: "Mano" }, { word: "Piper", hint: "Paraguas" }, 
+    { word: "Frank", hint: "Martillo" }, { word: "Bibi", hint: "Bate" }, 
+    { word: "Bea", hint: "Abeja" }, { word: "Edgar", hint: "Bufanda" }, 
+    { word: "Surge", hint: "Mejora" }
   ],
   [Category.RICH_WOMEN]: [
     { word: "Kim Kardashian", hint: "Influencer" }, { word: "Kylie Jenner", hint: "Cosméticos" },
@@ -119,6 +121,17 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
   [Category.NOSOTROS]: [] // Se llena dinámicamente
 };
 
+// Función para forzar pistas personalizadas (Easter Eggs)
+const applyCustomOverrides = (word: string, currentHint: string): string => {
+  const lowerWord = word.toLowerCase().trim();
+  
+  if (lowerWord === 'bull') return "Matias Velazquez";
+  if (lowerWord === 'angelo') return "Ignacio Adami";
+  if (lowerWord === 'barley' || lowerWord === 'barrley') return "Facundo Cabrera";
+  
+  return currentHint;
+};
+
 const getRandomOfflineContent = (category: Category): GameContent => {
   const list = OFFLINE_DATA[category];
   if (!list || list.length === 0) {
@@ -141,7 +154,12 @@ const getRandomOfflineContent = (category: Category): GameContent => {
 
   // Guardar en historial
   addWordToHistory(category, selection.word);
-  return selection;
+  
+  // Aplicar override de pistas especiales si es necesario
+  return { 
+    word: selection.word, 
+    hint: applyCustomOverrides(selection.word, selection.hint) 
+  };
 };
 
 // Helper to get specific context for the category
@@ -206,7 +224,7 @@ export const generateGameContent = async (category: Category): Promise<GameConte
       }
     });
 
-    const jsonText = response.text ? response.text : "{}";
+    const jsonText = response.text || "{}";
     let data: GameContent;
     
     try {
@@ -216,7 +234,10 @@ export const generateGameContent = async (category: Category): Promise<GameConte
     }
     
     const finalWord = data.word || getRandomOfflineContent(category).word;
-    const finalHint = data.hint || "Confía en ti";
+    let finalHint = data.hint || "Confía en ti";
+
+    // Aplicar Override de Pistas especiales (Easter Eggs) incluso si viene de la IA
+    finalHint = applyCustomOverrides(finalWord, finalHint);
 
     // Guardamos la palabra generada por IA en el historial local también
     addWordToHistory(category, finalWord);
@@ -231,6 +252,10 @@ export const generateGameContent = async (category: Category): Promise<GameConte
 
 export const generateHintForCustomWord = async (word: string): Promise<string> => {
   try {
+    // Verificar overrides antes de llamar a la IA
+    const override = applyCustomOverrides(word, "");
+    if (override) return override;
+
     const apiKey = process.env.API_KEY;
     if (!apiKey || apiKey.trim() === '') return "Sé discreto";
 
