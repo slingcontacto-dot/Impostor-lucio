@@ -11,9 +11,11 @@ export enum Category {
   ANIMALS = 'Animales',
   CLASH_ROYALE = 'Cartas Clash Royale',
   BRAWL_STARS = 'Cartas Brawl Stars',
-  RICH_WOMEN = 'Mujeres Ricas',
+  ACTORS = 'Actores',
   ACTRESSES = 'Actrices',
   SOCCER = 'Jugadores de Futbol',
+  BRANDS = 'Marcas',
+  OBJECTS = 'Cosas / Objetos',
   COLORS = 'Colores',
   NOSOTROS = 'Nosotros (Custom)'
 }

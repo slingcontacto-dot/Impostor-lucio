@@ -70,17 +70,17 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
     { word: "Bea", hint: "Abeja" }, { word: "Edgar", hint: "Bufanda" }, 
     { word: "Surge", hint: "Mejora" }
   ],
-  [Category.RICH_WOMEN]: [
-    { word: "Kim Kardashian", hint: "Influencer" }, { word: "Kylie Jenner", hint: "Cosméticos" },
-    { word: "Georgina Rodríguez", hint: "Soy" }, { word: "Paris Hilton", hint: "DJ" },
-    { word: "Rihanna", hint: "Paraguas" }, { word: "Beyoncé", hint: "Reina" },
-    { word: "Taylor Swift", hint: "Eras" }, { word: "Oprah", hint: "Entrevista" },
-    { word: "Madonna", hint: "Material" }, { word: "Jennifer Lopez", hint: "Anillo" },
-    { word: "Shakira", hint: "Caderas" }, { word: "Lady Gaga", hint: "Monstruo" },
-    { word: "Cardi B", hint: "Zapatos" }, { word: "Rosalía", hint: "Moto" },
-    { word: "Karol G", hint: "Bichota" }, { word: "Wanda Nara", hint: "Representante" },
-    { word: "Antonela Roccuzzo", hint: "Rosario" }, { word: "Victoria Beckham", hint: "Spice" },
-    { word: "Hailey Bieber", hint: "Modelo" }, { word: "Kendall Jenner", hint: "Pasarela" }
+  [Category.ACTORS]: [
+    { word: "Leonardo DiCaprio", hint: "Titanic" }, { word: "Brad Pitt", hint: "Rubio" },
+    { word: "Tom Cruise", hint: "Misión" }, { word: "Johnny Depp", hint: "Pirata" },
+    { word: "Robert Downey Jr", hint: "Hierro" }, { word: "Will Smith", hint: "Príncipe" },
+    { word: "Dwayne Johnson", hint: "Roca" }, { word: "Ryan Reynolds", hint: "Rojo" },
+    { word: "Cillian Murphy", hint: "Bomba" }, { word: "Henry Cavill", hint: "Capa" },
+    { word: "Pedro Pascal", hint: "Casco" }, { word: "Guillermo Francella", hint: "Bigote" },
+    { word: "Ricardo Darín", hint: "Secreto" }, { word: "Adam Sandler", hint: "Comedia" },
+    { word: "Jim Carrey", hint: "Muecas" }, { word: "Keanu Reeves", hint: "Matrix" },
+    { word: "Chris Evans", hint: "Escudo" }, { word: "Tom Holland", hint: "Araña" },
+    { word: "Vin Diesel", hint: "Familia" }, { word: "Joaquin Phoenix", hint: "Payaso" }
   ],
   [Category.ACTRESSES]: [
     { word: "Angelina Jolie", hint: "Maléfica" }, { word: "Scarlett Johansson", hint: "Vengadora" },
@@ -117,6 +117,30 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
     { word: "Turquesa", hint: "Piedra" }, { word: "Beige", hint: "Arena" },
     { word: "Bordó", hint: "Vino" }, { word: "Lila", hint: "Suave" },
     { word: "Fucsia", hint: "Intenso" }, { word: "Cian", hint: "Impresora" }
+  ],
+  [Category.OBJECTS]: [
+    { word: "Silla", hint: "Sentarse" }, { word: "Mesa", hint: "Comer" },
+    { word: "Cuchara", hint: "Sopa" }, { word: "Tenedor", hint: "Pinchos" },
+    { word: "Cama", hint: "Dormir" }, { word: "Almohada", hint: "Cabeza" },
+    { word: "Llave", hint: "Puerta" }, { word: "Teléfono", hint: "Llamada" },
+    { word: "Vaso", hint: "Agua" }, { word: "Botella", hint: "Plástico" },
+    { word: "Zapatilla", hint: "Pie" }, { word: "Reloj", hint: "Tiempo" },
+    { word: "Lámpara", hint: "Luz" }, { word: "Espejo", hint: "Reflejo" },
+    { word: "Peine", hint: "Pelo" }, { word: "Cepillo de Dientes", hint: "Boca" },
+    { word: "Toalla", hint: "Secar" }, { word: "Mochila", hint: "Espalda" },
+    { word: "Lápiz", hint: "Escribir" }, { word: "Tijera", hint: "Cortar" }
+  ],
+  [Category.BRANDS]: [
+    { word: "Coca-Cola", hint: "Refresco" }, { word: "Nike", hint: "Pipa" },
+    { word: "Adidas", hint: "Rayas" }, { word: "Apple", hint: "Manzana" },
+    { word: "Samsung", hint: "Galaxia" }, { word: "McDonald's", hint: "M" },
+    { word: "Burger King", hint: "Rey" }, { word: "Disney", hint: "Ratón" },
+    { word: "Netflix", hint: "Streaming" }, { word: "Google", hint: "Buscador" },
+    { word: "Toyota", hint: "Auto" }, { word: "Ferrari", hint: "Caballo" },
+    { word: "Amazon", hint: "Caja" }, { word: "PlayStation", hint: "Consola" },
+    { word: "Starbucks", hint: "Café" }, { word: "Zara", hint: "Ropa" },
+    { word: "Gucci", hint: "Lujo" }, { word: "Rolex", hint: "Reloj" },
+    { word: "Lego", hint: "Bloques" }, { word: "Marvel", hint: "Héroes" }
   ],
   [Category.NOSOTROS]: [] // Se llena dinámicamente
 };
@@ -168,9 +192,11 @@ const getCategoryContext = (category: Category): string => {
     case Category.ANIMALS: return "animal name";
     case Category.CLASH_ROYALE: return "Clash Royale card name";
     case Category.BRAWL_STARS: return "Brawl Stars brawler name";
-    case Category.RICH_WOMEN: return "famous wealthy woman";
+    case Category.ACTORS: return "famous actor";
     case Category.ACTRESSES: return "famous popular actress";
     case Category.SOCCER: return "famous football player";
+    case Category.BRANDS: return "famous global brand";
+    case Category.OBJECTS: return "common everyday object";
     case Category.COLORS: return "color name";
     default: return "common object";
   }
