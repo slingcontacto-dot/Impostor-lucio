@@ -80,45 +80,60 @@ function App() {
   };
 
   // Render logic based on phase
-  switch (phase) {
-    case GamePhase.LOGIN:
-      return <Login onLogin={handleLogin} />;
-    
-    case GamePhase.SETUP:
-      return <Setup onStartGame={startGame} />;
-    
-    case GamePhase.LOADING_TOPIC:
-      return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-          <p className="text-xl font-semibold animate-pulse">Generando palabra y pistas con IA...</p>
-        </div>
-      );
+  const renderContent = () => {
+    switch (phase) {
+      case GamePhase.LOGIN:
+        return <Login onLogin={handleLogin} />;
+      
+      case GamePhase.SETUP:
+        return <Setup onStartGame={startGame} />;
+      
+      case GamePhase.LOADING_TOPIC:
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p className="text-xl font-semibold animate-pulse">Generando palabra y pistas con IA...</p>
+          </div>
+        );
 
-    case GamePhase.PASS_DEVICE:
-    case GamePhase.REVEAL_ROLE: // GameLoop handles internal reveal state
-      return (
-        <GameLoop 
-          players={players} 
-          playerIndex={currentPlayerIndex}
-          impostorCount={config?.impostorCount || 1}
-          onNextPlayer={handleNextPlayer}
-          onFinishDistribution={handleFinishDistribution}
-        />
-      );
+      case GamePhase.PASS_DEVICE:
+      case GamePhase.REVEAL_ROLE: // GameLoop handles internal reveal state
+        return (
+          <GameLoop 
+            players={players} 
+            playerIndex={currentPlayerIndex}
+            impostorCount={config?.impostorCount || 1}
+            onNextPlayer={handleNextPlayer}
+            onFinishDistribution={handleFinishDistribution}
+          />
+        );
 
-    case GamePhase.DISCUSSION:
-      return (
-        <Discussion 
-          impostorCount={config?.impostorCount || 1}
-          players={players}
-          onNewGame={handleNewGame}
-        />
-      );
+      case GamePhase.DISCUSSION:
+        return (
+          <Discussion 
+            impostorCount={config?.impostorCount || 1}
+            players={players}
+            onNewGame={handleNewGame}
+          />
+        );
 
-    default:
-      return null;
-  }
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      {renderContent()}
+      
+      {/* MARCA DE AGUA GLOBAL */}
+      <div className="fixed bottom-2 right-3 z-50 pointer-events-none select-none opacity-40">
+        <p className="text-[10px] text-white font-mono uppercase tracking-widest drop-shadow-md">
+          Creado por Luciano Murua
+        </p>
+      </div>
+    </>
+  );
 }
 
 export default App;
