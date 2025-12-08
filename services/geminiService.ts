@@ -30,12 +30,14 @@ interface GameContent {
 
 export const generateGameContent = async (category: Category): Promise<GameContent> => {
   try {
-    if (!process.env.API_KEY) {
+    // Verificación segura del API KEY para evitar errores de tipo
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
       console.warn("No API KEY found");
       return { word: "API Key Missing", hint: "Check config" };
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     const context = getCategoryContext(category);
     
     const response = await ai.models.generateContent({
@@ -60,8 +62,15 @@ export const generateGameContent = async (category: Category): Promise<GameConte
       }
     });
 
-    const jsonText = response.text || "{}";
-    const data = JSON.parse(jsonText) as GameContent;
+    // Manejo seguro de posible valor undefined
+    const jsonText = response.text ? response.text : "{}";
+    let data: GameContent;
+    
+    try {
+        data = JSON.parse(jsonText) as GameContent;
+    } catch (e) {
+        data = { word: "Error Parsing", hint: "Intenta de nuevo" };
+    }
     
     return {
       word: data.word || "Error",
@@ -76,9 +85,10 @@ export const generateGameContent = async (category: Category): Promise<GameConte
 
 export const generateHintForCustomWord = async (word: string): Promise<string> => {
   try {
-    if (!process.env.API_KEY) return "Sin pista (No API Key)";
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) return "Sin pista (No API Key)";
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -89,7 +99,10 @@ export const generateHintForCustomWord = async (word: string): Promise<string> =
       }
     });
 
-    return response.text.trim();
+    // Manejo seguro de posible valor undefined
+    const text = response.text ? response.text.trim() : "";
+    return text || "Juega con confianza";
+
   } catch (error) {
     console.error("Error generating custom hint:", error);
     return "Juega con confianza";
