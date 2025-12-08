@@ -1,51 +1,120 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Category } from "../types";
 
+// --- GESTIÓN DE HISTORIAL (Evitar Repeticiones) ---
+const MAX_HISTORY = 15; // Recordar las últimas 15 palabras
+const getHistoryKey = (category: Category) => `impostor_history_${category}`;
+
+const getUsedWords = (category: Category): string[] => {
+  try {
+    const stored = localStorage.getItem(getHistoryKey(category));
+    return stored ? JSON.parse(stored) : [];
+  } catch (e) {
+    return [];
+  }
+};
+
+const addWordToHistory = (category: Category, word: string) => {
+  try {
+    const current = getUsedWords(category);
+    // Agregamos al inicio y cortamos si excede el máximo
+    const updated = [word, ...current].slice(0, MAX_HISTORY);
+    localStorage.setItem(getHistoryKey(category), JSON.stringify(updated));
+  } catch (e) {
+    console.error("Error saving history", e);
+  }
+};
+
+const clearHistory = (category: Category) => {
+  localStorage.removeItem(getHistoryKey(category));
+};
+
 // --- DATA DE RESPALDO (OFFLINE) ---
-// Se usa si no hay API Key o si la IA falla, para que el juego NUNCA se trabe.
+// Lista ampliada para garantizar variedad sin API Key
 const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
   [Category.ANIMALS]: [
-    { word: "Jirafa", hint: "Altura" },
-    { word: "Elefante", hint: "Memoria" },
-    { word: "Pingüino", hint: "Frío" },
-    { word: "León", hint: "Melena" },
-    { word: "Delfín", hint: "Inteligente" }
+    { word: "Jirafa", hint: "Cuello" }, { word: "Elefante", hint: "Trompa" },
+    { word: "Pingüino", hint: "Frac" }, { word: "León", hint: "Rey" },
+    { word: "Delfín", hint: "Salto" }, { word: "Tigre", hint: "Rayas" },
+    { word: "Águila", hint: "Vuelo" }, { word: "Tiburón", hint: "Aleta" },
+    { word: "Lobo", hint: "Luna" }, { word: "Oso", hint: "Miel" },
+    { word: "Canguro", hint: "Bolsa" }, { word: "Cocodrilo", hint: "Río" },
+    { word: "Murciélago", hint: "Noche" }, { word: "Panda", hint: "Bambú" },
+    { word: "Zebra", hint: "Blanco y negro" }, { word: "Camello", hint: "Joroba" },
+    { word: "Pulpo", hint: "Tinta" }, { word: "Gato", hint: "Vidas" },
+    { word: "Perro", hint: "Amigo" }, { word: "Mariposa", hint: "Oruga" }
   ],
   [Category.CLASH_ROYALE]: [
-    { word: "Montapuercos", hint: "Salto" },
-    { word: "P.E.K.K.A", hint: "Mariposa" },
-    { word: "Princesa", hint: "Distancia" },
-    { word: "Megacaballero", hint: "Aterrizaje" }
+    { word: "Montapuercos", hint: "Grito" }, { word: "P.E.K.K.A", hint: "Mariposa" },
+    { word: "Princesa", hint: "Fuego" }, { word: "Megacaballero", hint: "Salto" },
+    { word: "Ejército de Esqueletos", hint: "Multitud" }, { word: "Barril de Duendes", hint: "Vuelo" },
+    { word: "Mago Eléctrico", hint: "Zap" }, { word: "Minero", hint: "Tierra" },
+    { word: "Gigante Noble", hint: "Cañón" }, { word: "Bandida", hint: "Dash" },
+    { word: "Gólem", hint: "Roca" }, { word: "Dragón Infernal", hint: "Rayo" },
+    { word: "Leñador", hint: "Furia" }, { word: "Bruja Nocturna", hint: "Murciélagos" },
+    { word: "Arquero Mágico", hint: "Geometría" }, { word: "Chispitas", hint: "Carga" },
+    { word: "Fantasma Real", hint: "Invisible" }, { word: "Pescador", hint: "Anzuelo" },
+    { word: "Valquiria", hint: "Giro" }, { word: "Mosquetera", hint: "Disparo" }
   ],
   [Category.BRAWL_STARS]: [
-    { word: "Shelly", hint: "Escopeta" },
-    { word: "El Primo", hint: "Luchador" },
-    { word: "Spike", hint: "Cactus" },
-    { word: "Crow", hint: "Veneno" }
+    { word: "Shelly", hint: "Básica" }, { word: "El Primo", hint: "Meteorito" },
+    { word: "Spike", hint: "Silencio" }, { word: "Crow", hint: "Dagas" },
+    { word: "Leon", hint: "Camuflaje" }, { word: "Colt", hint: "Balas" },
+    { word: "Bull", hint: "Arbusto" }, { word: "Jessie", hint: "Torreta" },
+    { word: "Dynamike", hint: "Explosivo" }, { word: "Mortis", hint: "Pala" },
+    { word: "Tara", hint: "Cartas" }, { word: "Gene", hint: "Mano" },
+    { word: "Piper", hint: "Paraguas" }, { word: "Frank", hint: "Martillo" },
+    { word: "Bibi", hint: "Bate" }, { word: "Bea", hint: "Abeja" },
+    { word: "Edgar", hint: "Bufanda" }, { word: "Surge", hint: "Mejora" },
+    { word: "Colette", hint: "Fan" }, { word: "Amber", hint: "Fuego" }
   ],
   [Category.RICH_WOMEN]: [
-    { word: "Kim Kardashian", hint: "Reality" },
-    { word: "Kylie Jenner", hint: "Labios" },
-    { word: "Georgina Rodríguez", hint: "Soy" },
-    { word: "Paris Hilton", hint: "Heredera" }
+    { word: "Kim Kardashian", hint: "Influencer" }, { word: "Kylie Jenner", hint: "Cosméticos" },
+    { word: "Georgina Rodríguez", hint: "Soy" }, { word: "Paris Hilton", hint: "DJ" },
+    { word: "Rihanna", hint: "Paraguas" }, { word: "Beyoncé", hint: "Reina" },
+    { word: "Taylor Swift", hint: "Eras" }, { word: "Oprah", hint: "Entrevista" },
+    { word: "Madonna", hint: "Material" }, { word: "Jennifer Lopez", hint: "Anillo" },
+    { word: "Shakira", hint: "Caderas" }, { word: "Lady Gaga", hint: "Monstruo" },
+    { word: "Cardi B", hint: "Zapatos" }, { word: "Rosalía", hint: "Moto" },
+    { word: "Karol G", hint: "Bichota" }, { word: "Wanda Nara", hint: "Representante" },
+    { word: "Antonela Roccuzzo", hint: "Rosario" }, { word: "Victoria Beckham", hint: "Spice" },
+    { word: "Hailey Bieber", hint: "Modelo" }, { word: "Kendall Jenner", hint: "Pasarela" }
   ],
   [Category.ACTRESSES]: [
-    { word: "Angelina Jolie", hint: "Labios" },
-    { word: "Scarlett Johansson", hint: "Viuda" },
-    { word: "Margot Robbie", hint: "Muñeca" },
-    { word: "Jennifer Lawrence", hint: "Juegos" }
+    { word: "Angelina Jolie", hint: "Maléfica" }, { word: "Scarlett Johansson", hint: "Vengadora" },
+    { word: "Margot Robbie", hint: "Barbie" }, { word: "Jennifer Lawrence", hint: "Hambre" },
+    { word: "Emma Stone", hint: "La La Land" }, { word: "Zendaya", hint: "Araña" },
+    { word: "Anne Hathaway", hint: "Diablo" }, { word: "Meryl Streep", hint: "Leyenda" },
+    { word: "Julia Roberts", hint: "Mujer" }, { word: "Ana de Armas", hint: "Rubia" },
+    { word: "Salma Hayek", hint: "Frida" }, { word: "Penélope Cruz", hint: "España" },
+    { word: "Emma Watson", hint: "Magia" }, { word: "Gal Gadot", hint: "Maravilla" },
+    { word: "Natalie Portman", hint: "Cisne" }, { word: "Mila Kunis", hint: "Ted" },
+    { word: "Megan Fox", hint: "Robot" }, { word: "Cameron Diaz", hint: "Máscara" },
+    { word: "Jennifer Aniston", hint: "Amigos" }, { word: "Sandra Bullock", hint: "Gravedad" }
   ],
   [Category.SOCCER]: [
-    { word: "Lionel Messi", hint: "Cabra" },
-    { word: "Cristiano Ronaldo", hint: "Siuuu" },
-    { word: "Neymar", hint: "Caídas" },
-    { word: "Mbappé", hint: "Tortuga" }
+    { word: "Lionel Messi", hint: "Diez" }, { word: "Cristiano Ronaldo", hint: "Bicho" },
+    { word: "Neymar", hint: "Santos" }, { word: "Mbappé", hint: "Francia" },
+    { word: "Haaland", hint: "Robot" }, { word: "Vinicius Jr", hint: "Baile" },
+    { word: "Maradona", hint: "Mano" }, { word: "Pelé", hint: "Rey" },
+    { word: "Ronaldinho", hint: "Sonrisa" }, { word: "Zidane", hint: "Cabezazo" },
+    { word: "Bellingham", hint: "Hey Jude" }, { word: "Modric", hint: "Mago" },
+    { word: "Lewandowski", hint: "Gol" }, { word: "Benzema", hint: "Gato" },
+    { word: "Suárez", hint: "Mordisco" }, { word: "Ramos", hint: "Noventa" },
+    { word: "Iniesta", hint: "Gol" }, { word: "Xavi", hint: "Pase" },
+    { word: "Buffon", hint: "Eterno" }, { word: "Dibu Martínez", hint: "Bailecito" }
   ],
   [Category.COLORS]: [
-    { word: "Rojo", hint: "Pasión" },
-    { word: "Azul", hint: "Cielo" },
-    { word: "Verde", hint: "Naturaleza" },
-    { word: "Amarillo", hint: "Sol" }
+    { word: "Rojo", hint: "Sangre" }, { word: "Azul", hint: "Mar" },
+    { word: "Verde", hint: "Pasto" }, { word: "Amarillo", hint: "Luz" },
+    { word: "Negro", hint: "Oscuridad" }, { word: "Blanco", hint: "Nieve" },
+    { word: "Rosa", hint: "Pantera" }, { word: "Violeta", hint: "Flor" },
+    { word: "Naranja", hint: "Fruta" }, { word: "Gris", hint: "Nube" },
+    { word: "Marrón", hint: "Tierra" }, { word: "Celeste", hint: "Bandera" },
+    { word: "Dorado", hint: "Oro" }, { word: "Plateado", hint: "Medalla" },
+    { word: "Turquesa", hint: "Piedra" }, { word: "Beige", hint: "Arena" },
+    { word: "Bordó", hint: "Vino" }, { word: "Lila", hint: "Suave" },
+    { word: "Fucsia", hint: "Intenso" }, { word: "Cian", hint: "Impresora" }
   ],
   [Category.NOSOTROS]: [] // Se llena dinámicamente
 };
@@ -53,31 +122,39 @@ const OFFLINE_DATA: Record<Category, { word: string; hint: string }[]> = {
 const getRandomOfflineContent = (category: Category): GameContent => {
   const list = OFFLINE_DATA[category];
   if (!list || list.length === 0) {
-    return { word: "Mesa", hint: "Mueble" }; // Fallback final
+    return { word: "Mesa", hint: "Mueble" };
   }
-  const randomIndex = Math.floor(Math.random() * list.length);
-  return list[randomIndex];
+
+  const usedWords = getUsedWords(category);
+  // Filtrar palabras que ya se usaron
+  const available = list.filter(item => !usedWords.includes(item.word));
+
+  let selection;
+  if (available.length === 0) {
+    // Si ya usamos todas, limpiamos historial y elegimos cualquiera de la lista completa
+    clearHistory(category);
+    selection = list[Math.floor(Math.random() * list.length)];
+  } else {
+    // Elegir una de las disponibles
+    selection = available[Math.floor(Math.random() * available.length)];
+  }
+
+  // Guardar en historial
+  addWordToHistory(category, selection.word);
+  return selection;
 };
 
 // Helper to get specific context for the category
 const getCategoryContext = (category: Category): string => {
   switch (category) {
-    case Category.ANIMALS:
-      return "animal name in Spanish";
-    case Category.CLASH_ROYALE:
-      return "Clash Royale card name in Spanish";
-    case Category.BRAWL_STARS:
-      return "Brawl Stars brawler name";
-    case Category.RICH_WOMEN:
-      return "famous wealthy woman or female celebrity known for luxury";
-    case Category.ACTRESSES:
-      return "famous popular actress (Hollywood or International)";
-    case Category.SOCCER:
-      return "famous football (soccer) player";
-    case Category.COLORS:
-      return "color name in Spanish";
-    default:
-      return "common object word in Spanish";
+    case Category.ANIMALS: return "animal name";
+    case Category.CLASH_ROYALE: return "Clash Royale card name";
+    case Category.BRAWL_STARS: return "Brawl Stars brawler name";
+    case Category.RICH_WOMEN: return "famous wealthy woman";
+    case Category.ACTRESSES: return "famous popular actress";
+    case Category.SOCCER: return "famous football player";
+    case Category.COLORS: return "color name";
+    default: return "common object";
   }
 };
 
@@ -90,7 +167,7 @@ export const generateGameContent = async (category: Category): Promise<GameConte
   try {
     const apiKey = process.env.API_KEY;
     
-    // Si no hay API KEY, usamos el modo OFFLINE silenciosamente para que el juego funcione
+    // Si no hay API KEY, usamos el modo OFFLINE
     if (!apiKey || apiKey.trim() === '') {
       console.warn("Using Offline Mode (Missing API Key)");
       return getRandomOfflineContent(category);
@@ -98,18 +175,25 @@ export const generateGameContent = async (category: Category): Promise<GameConte
 
     const ai = new GoogleGenAI({ apiKey: apiKey });
     const context = getCategoryContext(category);
+    const usedWords = getUsedWords(category);
     
+    // Le decimos a la IA qué palabras NO usar
+    const exclusionText = usedWords.length > 0 
+      ? `DO NOT use any of these words: ${usedWords.join(', ')}.` 
+      : "";
+
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Generate a secret word for the game category: ${category}. Also provide a 'hint' for an impostor.`,
+      contents: `Generate a secret word for the game category: ${category}. Also provide a 'hint' for an impostor. 
+      ${exclusionText}`,
       config: {
         systemInstruction: `You are a game engine for 'The Impostor'. 
-        1. Select a random ${context}. 
+        1. Select a random ${context} in Spanish. 
         2. Generate a 'hint' for the impostor.
-        3. CRITICAL: The 'hint' must be SUBTLE, VAGUE, and AMBIGUOUS. It should NOT describe the object directly. It should reference a feeling, a minor detail, or a broad category. It must be HARD to guess the word from the hint alone.
+        3. CRITICAL: The 'hint' must be SUBTLE, VAGUE, and AMBIGUOUS. 
         4. The 'hint' MUST be in Spanish and VERY SHORT (maximum 3 words).
         5. Output MUST be valid JSON.`,
-        temperature: 1.3, // Higher temperature for more variety
+        temperature: 1.5, // Alta temperatura para variedad
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -131,10 +215,13 @@ export const generateGameContent = async (category: Category): Promise<GameConte
         return getRandomOfflineContent(category);
     }
     
-    return {
-      word: data.word || getRandomOfflineContent(category).word,
-      hint: data.hint || "Confía en ti"
-    };
+    const finalWord = data.word || getRandomOfflineContent(category).word;
+    const finalHint = data.hint || "Confía en ti";
+
+    // Guardamos la palabra generada por IA en el historial local también
+    addWordToHistory(category, finalWord);
+
+    return { word: finalWord, hint: finalHint };
 
   } catch (error) {
     console.error("Error generating content, falling back to offline:", error);
@@ -145,7 +232,7 @@ export const generateGameContent = async (category: Category): Promise<GameConte
 export const generateHintForCustomWord = async (word: string): Promise<string> => {
   try {
     const apiKey = process.env.API_KEY;
-    if (!apiKey || apiKey.trim() === '') return "Di algo vago";
+    if (!apiKey || apiKey.trim() === '') return "Sé discreto";
 
     const ai = new GoogleGenAI({ apiKey: apiKey });
     
@@ -159,9 +246,9 @@ export const generateHintForCustomWord = async (word: string): Promise<string> =
     });
 
     const text = response.text ? response.text.trim() : "";
-    return text || "Di algo vago";
+    return text || "Sé discreto";
 
   } catch (error) {
-    return "Di algo vago";
+    return "Sé discreto";
   }
 };
