@@ -35,6 +35,7 @@ export interface Player {
 export interface GameConfig {
   playerCount: number;
   impostorCount: number;
-  selectedCategory: Category;
-  customNames: string[]; // For "Nosotros"
+  selectedCategories: Category[]; // Changed from single to multiple
+  customNames: string[]; 
+  enableHints: boolean; // New flag for toggle hints
 }

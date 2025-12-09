@@ -8,7 +8,8 @@ interface SetupProps {
 const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
   const [playerCount, setPlayerCount] = useState(4);
   const [impostorCount, setImpostorCount] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(Category.ANIMALS);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([Category.ANIMALS]);
+  const [enableHints, setEnableHints] = useState(true);
   const [customNamesInput, setCustomNamesInput] = useState('');
 
   const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,12 +18,26 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
     if (impostorCount >= val) setImpostorCount(val - 1);
   };
 
+  const toggleCategory = (cat: Category) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(cat)) {
+        // Prevent deselecting the last one if it's the only one
+        if (prev.length === 1) return prev; 
+        return prev.filter(c => c !== cat);
+      } else {
+        return [...prev, cat];
+      }
+    });
+  };
+
   const handleStart = () => {
     let customNames: string[] = [];
-    if (selectedCategory === Category.NOSOTROS) {
+    
+    // Check if 'Nosotros' is selected among others
+    if (selectedCategories.includes(Category.NOSOTROS)) {
       customNames = customNamesInput.split(',').map(n => n.trim()).filter(n => n.length > 0);
       if (customNames.length < 2) {
-        alert("Para la categoría 'Nosotros', ingresa al menos 2 nombres separados por coma.");
+        alert("Si seleccionas la categoría 'Nosotros', debes ingresar al menos 2 nombres.");
         return;
       }
     }
@@ -30,8 +45,9 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
     onStartGame({
       playerCount,
       impostorCount,
-      selectedCategory,
-      customNames
+      selectedCategories,
+      customNames,
+      enableHints
     });
   };
 
@@ -42,7 +58,7 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
       </h2>
 
       {/* Player Count */}
-      <div className="glass-panel w-full p-6 rounded-2xl mb-6 relative overflow-hidden group">
+      <div className="glass-panel w-full p-6 rounded-2xl mb-4 relative overflow-hidden group border border-slate-700/50">
         <div className="absolute top-0 right-0 p-2 opacity-20">
              <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg>
         </div>
@@ -61,7 +77,7 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
       </div>
 
       {/* Impostor Count */}
-      <div className="glass-panel w-full p-6 rounded-2xl mb-8 relative overflow-hidden">
+      <div className="glass-panel w-full p-6 rounded-2xl mb-6 relative overflow-hidden border border-slate-700/50">
         <div className="absolute top-0 right-0 p-2 opacity-20">
              <svg className="w-16 h-16 text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clipRule="evenodd"></path></svg>
         </div>
@@ -77,34 +93,50 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
           onChange={(e) => setImpostorCount(parseInt(e.target.value))}
           className="w-full h-3 bg-slate-800 rounded-full appearance-none cursor-pointer accent-orange-500 hover:accent-orange-400 transition-all"
         />
-        <p className="text-[10px] text-orange-400/80 mt-3 text-right uppercase font-bold tracking-wider">Requiere {playerCount - impostorCount} inocentes</p>
+      </div>
+
+      {/* Hint Toggle Switch */}
+      <div className="glass-panel w-full p-4 rounded-2xl mb-8 border border-slate-700/50 flex items-center justify-between">
+         <span className="text-sm font-bold text-slate-300 uppercase tracking-widest ml-2">Pista para Impostor</span>
+         
+         <button 
+            onClick={() => setEnableHints(!enableHints)}
+            className={`w-16 h-8 rounded-full p-1 transition-all duration-300 flex items-center shadow-inner ${enableHints ? 'bg-green-600 shadow-[0_0_15px_rgba(22,163,74,0.4)]' : 'bg-slate-700'}`}
+         >
+            <div className={`w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 ${enableHints ? 'translate-x-8' : 'translate-x-0'}`}></div>
+         </button>
       </div>
 
       {/* Categories */}
       <div className="w-full mb-8">
-        <h3 className="text-xs font-black text-slate-400 mb-4 uppercase tracking-[0.2em] ml-2">Selecciona Categoría</h3>
+        <h3 className="text-xs font-black text-slate-400 mb-4 uppercase tracking-[0.2em] ml-2">
+            Categorías ({selectedCategories.length})
+        </h3>
         <div className="grid grid-cols-2 gap-3">
-          {Object.values(Category).map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`p-4 rounded-xl text-xs font-bold transition-all uppercase tracking-wide relative overflow-hidden group ${
-                selectedCategory === cat
-                  ? 'bg-gradient-to-br from-orange-600 to-red-600 text-white shadow-[0_0_20px_rgba(234,88,12,0.4)] scale-[1.02] border border-orange-400'
-                  : 'bg-black/40 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <span className="relative z-10">{cat}</span>
-              {selectedCategory === cat && (
-                <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-              )}
-            </button>
-          ))}
+          {Object.values(Category).map((cat) => {
+            const isSelected = selectedCategories.includes(cat);
+            return (
+              <button
+                key={cat}
+                onClick={() => toggleCategory(cat)}
+                className={`p-4 rounded-xl text-xs font-bold transition-all uppercase tracking-wide relative overflow-hidden group ${
+                  isSelected
+                    ? 'bg-gradient-to-br from-orange-600 to-red-600 text-white shadow-[0_0_20px_rgba(234,88,12,0.4)] scale-[1.02] border border-orange-400'
+                    : 'bg-black/40 border border-slate-800 text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <span className="relative z-10">{cat}</span>
+                {isSelected && (
+                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Custom Names Input */}
-      {selectedCategory === Category.NOSOTROS && (
+      {selectedCategories.includes(Category.NOSOTROS) && (
         <div className="w-full glass-panel p-6 rounded-xl mb-6 border border-orange-500/30 animate-fade-in">
           <label className="block text-xs font-black text-orange-400 mb-3 uppercase tracking-widest">Nombres (separados por coma)</label>
           <textarea

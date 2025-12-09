@@ -5,6 +5,7 @@ interface GameLoopProps {
   players: Player[];
   playerIndex: number;
   impostorCount: number;
+  enableHints: boolean; // New prop
   onNextPlayer: () => void;
   onFinishDistribution: () => void;
 }
@@ -13,6 +14,7 @@ const GameLoop: React.FC<GameLoopProps> = ({
   players,
   playerIndex,
   impostorCount,
+  enableHints,
   onNextPlayer,
   onFinishDistribution,
 }) => {
@@ -92,8 +94,8 @@ const GameLoop: React.FC<GameLoopProps> = ({
                             </svg>
                         </div>
                         
-                        {/* HINT SECTION */}
-                        {currentPlayer.impostorHint && (
+                        {/* HINT SECTION - Only if enableHints is true */}
+                        {enableHints && currentPlayer.impostorHint && (
                           <div className="bg-black/60 p-6 rounded-2xl border border-orange-500/50 mb-6 shadow-inner relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
                             <p className="text-[10px] text-orange-400 uppercase font-black tracking-widest mb-2">Tu Pista de Ayuda</p>

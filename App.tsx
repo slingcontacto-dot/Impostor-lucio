@@ -23,12 +23,15 @@ function App() {
     let secretWord = '';
     let impostorHint = '';
     
+    // Pick ONE category randomly from the selected list
+    const activeCategory = gameConfig.selectedCategories[Math.floor(Math.random() * gameConfig.selectedCategories.length)];
+    
     // Logic to determine secret word and hint
-    if (gameConfig.selectedCategory === Category.NOSOTROS) {
+    if (activeCategory === Category.NOSOTROS) {
       if (gameConfig.customNames.length > 0) {
         const randIndex = Math.floor(Math.random() * gameConfig.customNames.length);
         secretWord = gameConfig.customNames[randIndex];
-        // Generate a hint for this custom word
+        // Generate a hint for this custom word if hints are enabled (or generate it anyway to be safe)
         impostorHint = await generateHintForCustomWord(secretWord);
       } else {
         secretWord = "Error: Sin Nombres";
@@ -36,7 +39,7 @@ function App() {
       }
     } else {
       // Use AI for other categories to get both word and hint
-      const content = await generateGameContent(gameConfig.selectedCategory);
+      const content = await generateGameContent(activeCategory);
       secretWord = content.word;
       impostorHint = content.hint;
     }
@@ -103,6 +106,7 @@ function App() {
             players={players} 
             playerIndex={currentPlayerIndex}
             impostorCount={config?.impostorCount || 1}
+            enableHints={config?.enableHints ?? true} // Pass the toggle preference
             onNextPlayer={handleNextPlayer}
             onFinishDistribution={handleFinishDistribution}
           />
