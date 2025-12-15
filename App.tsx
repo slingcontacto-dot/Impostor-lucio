@@ -82,6 +82,12 @@ function App() {
     setConfig(null);
   };
 
+  const handleReplay = () => {
+    if (config) {
+      startGame(config);
+    }
+  };
+
   // Render logic based on phase
   const renderContent = () => {
     switch (phase) {
@@ -118,6 +124,7 @@ function App() {
             impostorCount={config?.impostorCount || 1}
             players={players}
             onNewGame={handleNewGame}
+            onReplay={handleReplay}
           />
         );
 

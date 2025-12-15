@@ -51,8 +51,22 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
     });
   };
 
+  const handleRandomStart = () => {
+    // Excluir 'NOSOTROS' para el modo aleatorio automático porque requiere inputs manuales
+    const availableCategories = Object.values(Category).filter(c => c !== Category.NOSOTROS);
+    const randomCategory = availableCategories[Math.floor(Math.random() * availableCategories.length)];
+    
+    onStartGame({
+      playerCount,
+      impostorCount,
+      selectedCategories: [randomCategory],
+      customNames: [],
+      enableHints
+    });
+  };
+
   return (
-    <div className="min-h-screen p-4 pb-28 flex flex-col items-center card-enter max-w-2xl mx-auto">
+    <div className="min-h-screen p-4 pb-36 flex flex-col items-center card-enter max-w-2xl mx-auto">
       <h2 className="text-5xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 mb-8 tracking-tighter uppercase transform -skew-x-6 drop-shadow-lg">
         SETUP
       </h2>
@@ -148,8 +162,19 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
         </div>
       )}
 
-      {/* Action Button */}
-      <div className="fixed bottom-6 left-0 right-0 px-4 max-w-2xl mx-auto z-50">
+      {/* Action Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-black via-black/90 to-transparent z-50 flex flex-col gap-3 max-w-2xl mx-auto">
+        
+        {/* Random Play Button */}
+        <button
+          onClick={handleRandomStart}
+          className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-white text-lg font-black py-4 rounded-2xl shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-2 border border-yellow-400/30"
+        >
+          <svg className="w-6 h-6 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          🎲 RUSH ALEATORIO
+        </button>
+
+        {/* Start Game Button */}
         <button
           onClick={handleStart}
           className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xl font-black py-5 rounded-2xl shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all active:scale-95 uppercase tracking-widest border-t border-green-400/30"
