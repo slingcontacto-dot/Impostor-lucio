@@ -75,7 +75,7 @@ const Discussion: React.FC<DiscussionProps> = ({ impostorCount, players, onNewGa
                         className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black py-4 rounded-xl shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all hover:scale-[1.02] uppercase tracking-widest border border-purple-400/30 flex items-center justify-center gap-2"
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                        REVANCHA RÁPIDA (MISMA CONFIG)
+                        VOLVER A JUGAR IGUAL
                     </button>
 
                     <button

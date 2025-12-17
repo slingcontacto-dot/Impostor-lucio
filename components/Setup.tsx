@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Category, GameConfig } from '../types';
+import { Category, GameConfig, Difficulty } from '../types';
 
 interface SetupProps {
   onStartGame: (config: GameConfig) => void;
@@ -9,7 +9,7 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
   const [playerCount, setPlayerCount] = useState(4);
   const [impostorCount, setImpostorCount] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([Category.ANIMALS]);
-  const [enableHints, setEnableHints] = useState(true);
+  const [hintDifficulty, setHintDifficulty] = useState<Difficulty>('medium');
   const [customNamesInput, setCustomNamesInput] = useState('');
 
   const handlePlayerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
       impostorCount,
       selectedCategories,
       customNames,
-      enableHints
+      hintDifficulty
     });
   };
 
@@ -61,8 +61,26 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
       impostorCount,
       selectedCategories: [randomCategory],
       customNames: [],
-      enableHints
+      hintDifficulty
     });
+  };
+
+  const getDifficultyLabel = (diff: Difficulty) => {
+    switch (diff) {
+      case 'easy': return 'FÁCIL';
+      case 'medium': return 'MEDIO';
+      case 'hard': return 'DIFÍCIL';
+      case 'none': return 'OFF';
+    }
+  };
+
+  const getDifficultyColor = (diff: Difficulty) => {
+    switch (diff) {
+      case 'easy': return 'bg-green-600';
+      case 'medium': return 'bg-yellow-600';
+      case 'hard': return 'bg-red-600';
+      case 'none': return 'bg-slate-700';
+    }
   };
 
   return (
@@ -109,16 +127,30 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
         />
       </div>
 
-      {/* Hint Toggle Switch */}
-      <div className="glass-panel w-full p-4 rounded-2xl mb-8 border border-slate-700/50 flex items-center justify-between">
-         <span className="text-sm font-bold text-slate-300 uppercase tracking-widest ml-2">Pista para Impostor</span>
+      {/* Difficulty Selector */}
+      <div className="glass-panel w-full p-4 rounded-2xl mb-8 border border-slate-700/50 flex flex-col gap-3">
+         <div className="flex justify-between items-center">
+             <span className="text-sm font-bold text-slate-300 uppercase tracking-widest ml-2">Pista para Impostor</span>
+             <span className={`text-[10px] px-2 py-1 rounded font-black ${getDifficultyColor(hintDifficulty)} text-white`}>
+                 {getDifficultyLabel(hintDifficulty)}
+             </span>
+         </div>
          
-         <button 
-            onClick={() => setEnableHints(!enableHints)}
-            className={`w-16 h-8 rounded-full p-1 transition-all duration-300 flex items-center shadow-inner ${enableHints ? 'bg-green-600 shadow-[0_0_15px_rgba(22,163,74,0.4)]' : 'bg-slate-700'}`}
-         >
-            <div className={`w-6 h-6 rounded-full bg-white shadow-md transform transition-transform duration-300 ${enableHints ? 'translate-x-8' : 'translate-x-0'}`}></div>
-         </button>
+         <div className="grid grid-cols-4 gap-2">
+            {(['easy', 'medium', 'hard', 'none'] as Difficulty[]).map((level) => (
+                <button
+                    key={level}
+                    onClick={() => setHintDifficulty(level)}
+                    className={`py-3 rounded-lg text-[10px] font-bold uppercase transition-all border border-transparent ${
+                        hintDifficulty === level 
+                        ? `${getDifficultyColor(level)} text-white shadow-lg scale-105 border-white/20` 
+                        : 'bg-black/40 text-slate-500 hover:bg-slate-800'
+                    }`}
+                >
+                    {level === 'none' ? 'OFF' : level === 'medium' ? 'MED' : level.toUpperCase().substring(0,3)}
+                </button>
+            ))}
+         </div>
       </div>
 
       {/* Categories */}
@@ -165,13 +197,12 @@ const Setup: React.FC<SetupProps> = ({ onStartGame }) => {
       {/* Action Buttons */}
       <div className="fixed bottom-0 left-0 right-0 p-4 pb-6 bg-gradient-to-t from-black via-black/90 to-transparent z-50 flex flex-col gap-3 max-w-2xl mx-auto">
         
-        {/* Random Play Button */}
+        {/* Random Play Button - CASUAL STYLE */}
         <button
           onClick={handleRandomStart}
           className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-white text-lg font-black py-4 rounded-2xl shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-2 border border-yellow-400/30"
         >
-          <svg className="w-6 h-6 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          🎲 RUSH ALEATORIO
+          PARTIDA ALEATORIA
         </button>
 
         {/* Start Game Button */}

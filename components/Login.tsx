@@ -9,6 +9,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [pass, setPass] = useState('');
   const [error, setError] = useState('');
   const [showCredentialsModal, setShowCredentialsModal] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +22,18 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   const handleInstagramRedirect = () => {
     window.open('https://www.instagram.com/lucianomuruaaa/', '_blank');
+  };
+
+  const handleCopyCredentials = () => {
+    const textToCopy = "LucianoDesarrollador"; // Mismo user y pass
+    // Copiamos solo el string que sirve para ambos campos, o podrías copiar un formato completo.
+    // Dado que user y pass son iguales, copiar una vez sirve para pegar en ambos.
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopyFeedback('¡COPIADO!');
+      setTimeout(() => setCopyFeedback(''), 2000);
+    }).catch(err => {
+      console.error('Error al copiar: ', err);
+    });
   };
 
   return (
@@ -85,13 +98,31 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
             </button>
 
-            <button
-              type="button"
-              onClick={() => setShowCredentialsModal(true)}
-              className="w-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white font-bold py-3 rounded-xl transition-colors uppercase tracking-widest text-[10px] border border-slate-700"
-            >
-              Pedir datos para jugar
-            </button>
+            <div className="grid grid-cols-2 gap-2">
+                <button
+                type="button"
+                onClick={() => setShowCredentialsModal(true)}
+                className="w-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white font-bold py-3 rounded-xl transition-colors uppercase tracking-widest text-[10px] border border-slate-700 flex flex-col items-center justify-center gap-1"
+                >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    VER DATOS
+                </button>
+                
+                <button
+                type="button"
+                onClick={handleCopyCredentials}
+                className="w-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white font-bold py-3 rounded-xl transition-colors uppercase tracking-widest text-[10px] border border-slate-700 flex flex-col items-center justify-center gap-1 active:bg-orange-500/20 active:border-orange-500"
+                >
+                    {copyFeedback ? (
+                        <span className="text-orange-400 animate-pulse">{copyFeedback}</span>
+                    ) : (
+                        <>
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            COPIAR DATOS
+                        </>
+                    )}
+                </button>
+            </div>
           </div>
         </form>
 

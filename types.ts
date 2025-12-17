@@ -25,6 +25,8 @@ export enum Category {
   NOSOTROS = 'Nosotros (Custom)'
 }
 
+export type Difficulty = 'easy' | 'medium' | 'hard' | 'none';
+
 export interface Player {
   id: number;
   isImpostor: boolean;
@@ -35,7 +37,7 @@ export interface Player {
 export interface GameConfig {
   playerCount: number;
   impostorCount: number;
-  selectedCategories: Category[]; // Changed from single to multiple
+  selectedCategories: Category[];
   customNames: string[]; 
-  enableHints: boolean; // New flag for toggle hints
+  hintDifficulty: Difficulty; // Changed from enableHints boolean
 }

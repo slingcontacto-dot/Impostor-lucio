@@ -24,6 +24,7 @@ function App() {
     let impostorHint = '';
     
     // Pick ONE category randomly from the selected list
+    // Math.random here ensures a fresh category choice if multiple are selected
     const activeCategory = gameConfig.selectedCategories[Math.floor(Math.random() * gameConfig.selectedCategories.length)];
     
     // Logic to determine secret word and hint
@@ -32,14 +33,15 @@ function App() {
         const randIndex = Math.floor(Math.random() * gameConfig.customNames.length);
         secretWord = gameConfig.customNames[randIndex];
         // Generate a hint for this custom word if hints are enabled (or generate it anyway to be safe)
-        impostorHint = await generateHintForCustomWord(secretWord);
+        impostorHint = await generateHintForCustomWord(secretWord, gameConfig.hintDifficulty);
       } else {
         secretWord = "Error: Sin Nombres";
         impostorHint = "Sin Pista";
       }
     } else {
       // Use AI for other categories to get both word and hint
-      const content = await generateGameContent(activeCategory);
+      // Passing difficulty to the service
+      const content = await generateGameContent(activeCategory, gameConfig.hintDifficulty);
       secretWord = content.word;
       impostorHint = content.hint;
     }
@@ -53,6 +55,7 @@ function App() {
     }));
 
     // Assign Impostors randomly
+    // We start from a fresh array, so this randomization is independent of previous games
     let assignedImpostors = 0;
     while (assignedImpostors < gameConfig.impostorCount) {
       const randomIndex = Math.floor(Math.random() * gameConfig.playerCount);
@@ -84,6 +87,7 @@ function App() {
 
   const handleReplay = () => {
     if (config) {
+      // Calling startGame again will trigger new word generation and new impostor assignment
       startGame(config);
     }
   };
@@ -101,7 +105,7 @@ function App() {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-white">
             <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-4"></div>
-            <p className="text-xl font-semibold animate-pulse">Generando palabra y pistas con IA...</p>
+            <p className="text-xl font-semibold animate-pulse">Mezclando y repartiendo...</p>
           </div>
         );
 
@@ -112,7 +116,7 @@ function App() {
             players={players} 
             playerIndex={currentPlayerIndex}
             impostorCount={config?.impostorCount || 1}
-            enableHints={config?.enableHints ?? true} // Pass the toggle preference
+            hintDifficulty={config?.hintDifficulty ?? 'medium'} // Pass the difficulty
             onNextPlayer={handleNextPlayer}
             onFinishDistribution={handleFinishDistribution}
           />
