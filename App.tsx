@@ -11,6 +11,7 @@ function App() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [config, setConfig] = useState<GameConfig | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<string>('');
 
   const handleLogin = () => {
     setPhase(GamePhase.SETUP);
@@ -26,7 +27,8 @@ function App() {
     // Pick ONE category randomly from the selected list
     // Math.random here ensures a fresh category choice if multiple are selected
     const activeCategory = gameConfig.selectedCategories[Math.floor(Math.random() * gameConfig.selectedCategories.length)];
-    
+    setCurrentCategory(activeCategory);
+
     // Logic to determine secret word and hint
     if (activeCategory === Category.NOSOTROS) {
       if (gameConfig.customNames.length > 0) {
@@ -117,6 +119,7 @@ function App() {
             playerIndex={currentPlayerIndex}
             impostorCount={config?.impostorCount || 1}
             hintDifficulty={config?.hintDifficulty ?? 'medium'} // Pass the difficulty
+            category={currentCategory}
             onNextPlayer={handleNextPlayer}
             onFinishDistribution={handleFinishDistribution}
           />

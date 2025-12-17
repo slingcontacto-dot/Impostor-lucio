@@ -5,7 +5,8 @@ interface GameLoopProps {
   players: Player[];
   playerIndex: number;
   impostorCount: number;
-  hintDifficulty: Difficulty; 
+  hintDifficulty: Difficulty;
+  category: string;
   onNextPlayer: () => void;
   onFinishDistribution: () => void;
 }
@@ -15,6 +16,7 @@ const GameLoop: React.FC<GameLoopProps> = ({
   playerIndex,
   impostorCount,
   hintDifficulty,
+  category,
   onNextPlayer,
   onFinishDistribution,
 }) => {
@@ -87,10 +89,16 @@ const GameLoop: React.FC<GameLoopProps> = ({
                         </h1>
                         
                         {/* Icono más pequeño para menos luz, usando colores AZULES/CIAN como el inocente */}
-                        <div className="w-24 h-24 bg-gradient-to-br from-cyan-900 to-blue-900 rounded-full mx-auto flex items-center justify-center mb-8 border border-blue-500/30">
+                        <div className="w-24 h-24 bg-gradient-to-br from-cyan-900 to-blue-900 rounded-full mx-auto flex items-center justify-center mb-6 border border-blue-500/30">
                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-cyan-200">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                             </svg>
+                        </div>
+                        
+                        {/* CATEGORÍA SIEMPRE VISIBLE PARA IMPOSTOR */}
+                        <div className="mb-6 bg-cyan-900/10 p-2 rounded-xl border border-cyan-800/30">
+                            <p className="text-cyan-500 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Categoría</p>
+                            <p className="text-xl font-bold text-white uppercase drop-shadow-md">{category}</p>
                         </div>
                         
                         {/* HINT SECTION - Only if hintDifficulty is not 'none' */}
@@ -102,6 +110,7 @@ const GameLoop: React.FC<GameLoopProps> = ({
                           </div>
                         )}
 
+                        {/* CANTIDAD DE IMPOSTORES SIEMPRE VISIBLE */}
                         <div className="bg-cyan-950/20 p-4 rounded-xl border border-cyan-900/30">
                             <p className="text-cyan-400 text-sm font-bold uppercase tracking-wide">
                                 Total Impostores: <span className="text-2xl text-white ml-2">{impostorCount}</span>
